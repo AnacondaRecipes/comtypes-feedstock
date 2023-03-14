@@ -1,6 +1,6 @@
 {% set name = "comtypes" %}
-{% set version = "1.1.10" %}
-{% set sha256 = "ccfee592e745ca05d5b19739948039eb2a5fb743868212ea740ccb66d63fad2e" %}
+{% set version = "1.1.14" %}
+{% set sha256 = "dc8a8819b1fb75630bea279e184d2270b41c9120d656813441dfc7253ecf6c91" %}
 
 package:
   name: {{ name|lower }}
@@ -12,7 +12,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1002
+  number: 0
   skip: True  # [not win]
   script: python setup.py install --single-version-externally-managed --record record.txt
 
@@ -42,6 +42,7 @@ about:
     C++-code.
   doc_url: http://pythonhosted.org/comtypes/
   doc_source_url: https://github.com/enthought/comtypes/blob/master/docs/source/index.rst
+  doc_url: https://pythonhosted.org/comtypes/
   dev_url: https://github.com/enthought/comtypes/
 
 extra:

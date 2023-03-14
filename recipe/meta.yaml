@@ -14,7 +14,7 @@ source:
 build:
   number: 0
   skip: True  # [not win]
-  script: { PYTHON }} -m pip install . --no-deps -vv 
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   host:
@@ -26,8 +26,10 @@ requirements:
     - python
 
 test:
-  imports:
-    - comtypes
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
   home: https://github.com/enthought/comtypes/

@@ -13,13 +13,13 @@ source:
 
 build:
   number: 0
-  skip: true  # [not win]
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: True  # [not win or py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
     - python
-    - setuptools
+    - setuptools >=61.2
     - pip
     - wheel
   run:

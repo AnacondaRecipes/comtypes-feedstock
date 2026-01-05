@@ -1,38 +1,41 @@
 {% set name = "comtypes" %}
 {% set version = "1.4.14" %}
-{% set sha256 = "7e934c5d318b4357854bc9d598e1dab7833446aba52426e49436223845ebeb37" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://github.com/enthought/comtypes/archive/{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://github.com/enthought/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: 7e934c5d318b4357854bc9d598e1dab7833446aba52426e49436223845ebeb37
 
 build:
   number: 0
-  skip: true  # [not win or py<38]
+  skip: true  # [not win or py<39]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - clear_comtypes_cache = comtypes.clear_cache:main
 
 requirements:
   host:
     - python
-    - setuptools >=61.2
     - pip
-    - wheel
+    - setuptools >=77.0.0
   run:
     - python
 
 test:
   requires:
     - pip
+    - pytest
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest --pyargs comtypes.test
+    - clear_comtypes_cache --help
 
 about:
-  home: https://github.com/enthought/comtypes/
+  home: https://github.com/enthought/comtypes
   license: MIT
   license_file: LICENSE.txt
   license_family: MIT
@@ -44,8 +47,8 @@ about:
     contains superior client side support for dispatch based COM interfaces,it is
     not possible to access custom COM interfaces unless they are wrapped in
     C++-code.
-  doc_url: https://pythonhosted.org/comtypes/
-  dev_url: https://github.com/enthought/comtypes/
+  doc_url: https://pythonhosted.org/comtypes
+  dev_url: https://github.com/enthought/comtypes
 
 extra:
   recipe-maintainers:

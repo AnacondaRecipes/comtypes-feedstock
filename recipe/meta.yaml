@@ -24,15 +24,27 @@ requirements:
   run:
     - python
 
+# >           with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, rf"CLSID\{clsid}\TypeLib") as key:
+                #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# E           FileNotFoundError: [WinError 2] The system cannot find the file specified
+{% set tests_to_skip = "test_clsid" %}
+# E   OSError: [WinError -2147024703] %1 is not a valid Win32 application
+{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke" %}
+{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke_item_moniker" %}
+# E       ImportError: cannot import name 'test_support' from 'test' (%PREFIX%\Lib\test\__init__.py)
+{% set tests_to_skip = tests_to_skip + " or test_main" %}
+
 test:
+  imports:
+    - comtypes
   requires:
     - pip
     - pytest
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest --pyargs comtypes.test
     - clear_comtypes_cache --help
+    - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})"
 
 about:
   home: https://github.com/enthought/comtypes

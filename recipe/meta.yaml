@@ -1,38 +1,53 @@
 {% set name = "comtypes" %}
-{% set version = "1.4.11" %}
-{% set sha256 = "da23dd727f5483ed29977b0e874571012f881587947f9cb430fabff6a138bcd0" %}
+{% set version = "1.4.14" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://github.com/enthought/comtypes/archive/{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://github.com/enthought/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: 7e934c5d318b4357854bc9d598e1dab7833446aba52426e49436223845ebeb37
 
 build:
   number: 0
-  skip: True  # [not win or py<38]
+  skip: true  # [not win or py<39]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - clear_comtypes_cache = comtypes.clear_cache:main
 
 requirements:
   host:
     - python
-    - setuptools >=61.2
     - pip
-    - wheel
+    - setuptools >=77.0.0
   run:
     - python
 
+# >           with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, rf"CLSID\{clsid}\TypeLib") as key:
+                #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# E           FileNotFoundError: [WinError 2] The system cannot find the file specified
+{% set tests_to_skip = "test_clsid" %}
+# E   OSError: [WinError -2147024703] %1 is not a valid Win32 application
+{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke" %}
+{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke_item_moniker" %}
+# E       ImportError: cannot import name 'test_support' from 'test' (%PREFIX%\Lib\test\__init__.py)
+{% set tests_to_skip = tests_to_skip + " or test_main" %}
+
 test:
+  imports:
+    - comtypes
   requires:
     - pip
+    - pytest
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - clear_comtypes_cache --help
+    - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})"
 
 about:
-  home: https://github.com/enthought/comtypes/
+  home: https://github.com/enthought/comtypes
   license: MIT
   license_file: LICENSE.txt
   license_family: MIT
@@ -44,8 +59,8 @@ about:
     contains superior client side support for dispatch based COM interfaces,it is
     not possible to access custom COM interfaces unless they are wrapped in
     C++-code.
-  doc_url: https://pythonhosted.org/comtypes/
-  dev_url: https://github.com/enthought/comtypes/
+  doc_url: https://pythonhosted.org/comtypes
+  dev_url: https://github.com/enthought/comtypes
 
 extra:
   recipe-maintainers:

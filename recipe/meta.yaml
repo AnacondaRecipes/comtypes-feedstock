@@ -1,13 +1,20 @@
 {% set name = "comtypes" %}
-{% set version = "1.4.14" %}
+{% set version = "1.4.16" %}
+{% set tests_to_skip = "test_clsid" %}
+{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke" %}
+{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke_item_moniker" %}
+{% set tests_to_skip = tests_to_skip + " or test_main" %}
 
+# E           FileNotFoundError: [WinError 2] The system cannot find the file specified
+# E   OSError: [WinError -2147024703] %1 is not a valid Win32 application
+# E       ImportError: cannot import name 'test_support' from 'test' (%PREFIX%\Lib\test\__init__.py)
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
   url: https://github.com/enthought/{{ name }}/archive/{{ version }}.tar.gz
-  sha256: 7e934c5d318b4357854bc9d598e1dab7833446aba52426e49436223845ebeb37
+  sha256: 79bdb1e319a3e8cd26cf0aece54ff550aa0bb749625cf74c0cbe3cae2fe764d9
 
 build:
   number: 0
@@ -23,16 +30,6 @@ requirements:
     - setuptools >=77.0.0
   run:
     - python
-
-# >           with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, rf"CLSID\{clsid}\TypeLib") as key:
-                #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# E           FileNotFoundError: [WinError 2] The system cannot find the file specified
-{% set tests_to_skip = "test_clsid" %}
-# E   OSError: [WinError -2147024703] %1 is not a valid Win32 application
-{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke" %}
-{% set tests_to_skip = tests_to_skip + " or test_register_and_revoke_item_moniker" %}
-# E       ImportError: cannot import name 'test_support' from 'test' (%PREFIX%\Lib\test\__init__.py)
-{% set tests_to_skip = tests_to_skip + " or test_main" %}
 
 test:
   imports:
@@ -65,3 +62,6 @@ about:
 extra:
   recipe-maintainers:
     - nehaljwani
+
+<conda_recipe_manager.types.SentinelType object at 0x7f2636a52270>:  # >           with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, rf"CLSID\{clsid}\TypeLib") as key:
+  #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

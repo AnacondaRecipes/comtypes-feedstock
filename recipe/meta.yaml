@@ -33,7 +33,8 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_register_and_revoke_item_moniker" %}
 # E       ImportError: cannot import name 'test_support' from 'test' (%PREFIX%\Lib\test\__init__.py)
 {% set tests_to_skip = tests_to_skip + " or test_main" %}
-
+# E   Windows fatal exception: access violation on win-arm64 (COM ShellLink Release)
+{% set tests_to_skip = tests_to_skip + " or test_com_interface" %} # [win and arm64]
 test:
   imports:
     - comtypes

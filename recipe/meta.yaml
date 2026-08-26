@@ -36,6 +36,8 @@ requirements:
 # E   Windows fatal exception: access violation on win-arm64 (COM ShellLink Release)
 {% set tests_to_skip = tests_to_skip + " or test_com_interface" %} # [win and arm64]
 test:
+  source_files:
+    - comtypes/test
   imports:
     - comtypes
   requires:
@@ -45,8 +47,8 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - clear_comtypes_cache --help
-    - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})" --ignore-glob="*test_git.py" # [win and arm64]
-    - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})"
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})" --ignore=comtypes/test/test_git.py # [win and arm64]
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})"
 
 about:
   home: https://github.com/enthought/comtypes

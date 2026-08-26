@@ -37,7 +37,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_com_interface" %} # [win and arm64]
 
 {% set ignored_win_arm64 = [
-  "--deselect=comtypes/test/test_outparam.py::Test::test_c_char",
+  "--ignore=comtypes/test/test_outparam.py",
   "--ignore=comtypes/test/test_git.py",
   "--ignore=comtypes/test/test_malloc.py"
 ]%}

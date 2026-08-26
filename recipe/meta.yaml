@@ -45,6 +45,7 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - clear_comtypes_cache --help
+    - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})" --ignore-glob="*test_git.py" # [win and arm64]
     - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})"
 
 about:

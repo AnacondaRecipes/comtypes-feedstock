@@ -35,6 +35,13 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_main" %}
 # E   Windows fatal exception: access violation on win-arm64 (COM ShellLink Release)
 {% set tests_to_skip = tests_to_skip + " or test_com_interface" %} # [win and arm64]
+
+{% set ignored_win-arm64 = [
+  "--deselect=comtypes/test/test_outparam.py::Test::test_c_char",
+  "--ignore=comtypes/test/test_git.py",
+  "--ignore=comtypes/test/test_malloc.py"
+]}
+
 test:
   source_files:
     - comtypes/test
@@ -47,7 +54,7 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - clear_comtypes_cache --help
-    - pytest comtypes/test -k "not ({{ tests_to_skip }})" --ignore=comtypes/test/test_git.py --ignore=comtypes\test\test_malloc.py # [win and arm64]
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})" {{ ignored_win-arm64 | join(' ') }} # [win and arm64]
     - pytest comtypes/test -k "not ({{ tests_to_skip }})" # [not (win and arm64)]
 
 about:

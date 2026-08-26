@@ -1,5 +1,5 @@
 {% set name = "comtypes" %}
-{% set version = "1.4.14" %}
+{% set version = "1.4.16" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/enthought/{{ name }}/archive/{{ version }}.tar.gz
-  sha256: 7e934c5d318b4357854bc9d598e1dab7833446aba52426e49436223845ebeb37
+  sha256: 79bdb1e319a3e8cd26cf0aece54ff550aa0bb749625cf74c0cbe3cae2fe764d9
 
 build:
   number: 0
@@ -33,8 +33,18 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_register_and_revoke_item_moniker" %}
 # E       ImportError: cannot import name 'test_support' from 'test' (%PREFIX%\Lib\test\__init__.py)
 {% set tests_to_skip = tests_to_skip + " or test_main" %}
+# E   Windows fatal exception: access violation on win-arm64 (COM ShellLink Release)
+{% set tests_to_skip = tests_to_skip + " or test_com_interface" %} # [win and arm64]
+
+{% set ignored_win_arm64 = [
+  "--ignore=comtypes/test/test_outparam.py",
+  "--ignore=comtypes/test/test_git.py",
+  "--ignore=comtypes/test/test_malloc.py"
+]%}
 
 test:
+  source_files:
+    - comtypes/test
   imports:
     - comtypes
   requires:
@@ -44,7 +54,8 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - clear_comtypes_cache --help
-    - pytest --pyargs comtypes.test -k "not ({{ tests_to_skip }})"
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})" {{ ignored_win_arm64 | join(' ') }} # [win and arm64]
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})" # [not (win and arm64)]
 
 about:
   home: https://github.com/enthought/comtypes

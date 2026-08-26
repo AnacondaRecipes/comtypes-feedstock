@@ -1,5 +1,5 @@
 {% set name = "comtypes" %}
-{% set version = "1.4.14" %}
+{% set version = "1.4.16" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/enthought/{{ name }}/archive/{{ version }}.tar.gz
-  sha256: 7e934c5d318b4357854bc9d598e1dab7833446aba52426e49436223845ebeb37
+  sha256: 79bdb1e319a3e8cd26cf0aece54ff550aa0bb749625cf74c0cbe3cae2fe764d9
 
 build:
-  number: 1
+  number: 0
   skip: true  # [not win or py<39]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:

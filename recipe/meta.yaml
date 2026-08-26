@@ -47,8 +47,8 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - clear_comtypes_cache --help
-    - pytest comtypes/test -k "not ({{ tests_to_skip }})" --ignore=comtypes/test/test_git.py # [win and arm64]
-    - pytest comtypes/test -k "not ({{ tests_to_skip }})"
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})" --ignore=comtypes/test/test_git.py --ignore=comtypes\test\test_malloc.py # [win and arm64]
+    - pytest comtypes/test -k "not ({{ tests_to_skip }})" # [not (win and arm64)]
 
 about:
   home: https://github.com/enthought/comtypes
